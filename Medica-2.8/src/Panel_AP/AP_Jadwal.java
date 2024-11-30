@@ -191,8 +191,9 @@ public class AP_Jadwal extends javax.swing.JPanel {
     }
 
 
-    private void deleteJadwalPerawatan() {
-        int row = Daftar_Jadwal.getSelectedRow();
+   private void deleteJadwalPerawatan() {
+       
+         int row = Daftar_Jadwal.getSelectedRow();
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Pilih data yang ingin dihapus.");
             return;
@@ -200,8 +201,13 @@ public class AP_Jadwal extends javax.swing.JPanel {
 
         String pasien = tableModel.getValueAt(row, 0).toString();
         try {
-            String sql = "DELETE FROM jadwal_perawatan WHERE id_jadwal = (SELECT id_jadwal FROM jadwal_perawatan jp " +
-                         "JOIN pasien p ON jp.id_pasien = p.id_pasien WHERE p.nama = ? LIMIT 1)";
+            // Mengatasi error: "You can't specify target table for update in FROM clause"
+            String sql = "DELETE FROM jadwal_perawatan WHERE id_jadwal IN (" +
+                         "SELECT id_jadwal_tmp FROM (" +
+                         "SELECT jp.id_jadwal AS id_jadwal_tmp " +
+                         "FROM jadwal_perawatan jp " +
+                         "JOIN pasien p ON jp.id_pasien = p.id_pasien " +
+                         "WHERE p.nama = ? LIMIT 1) tmp)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, pasien);
                 ps.executeUpdate();
@@ -301,6 +307,9 @@ public class AP_Jadwal extends javax.swing.JPanel {
 
         Dokter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "- < Dokter > -" }));
         panelRound1.add(Dokter, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 160, 170, 30));
+
+        Tanggal.setMaxSelectableDate(new java.util.Date(253370739703000L));
+        Tanggal.setName("Tanggal"); // NOI18N
         panelRound1.add(Tanggal, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 200, 170, 20));
 
         Tambah.setBackground(new java.awt.Color(0, 153, 153));
