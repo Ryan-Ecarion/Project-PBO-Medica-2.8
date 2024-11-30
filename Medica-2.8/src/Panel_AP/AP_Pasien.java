@@ -117,26 +117,33 @@ public class AP_Pasien extends javax.swing.JPanel {
     }
 
     // Tambah data
-    private void tambahData() {
-        String nama = Nama.getText();
-        String telp = No_Telepon.getText();
-        String alamat = Alamat.getText();
-        String jk = Jenis_Kelamin.getSelectedItem().toString().equals("Laki-laki") ? "L" : "P";
+   private void tambahData() {
+    String nama = Nama.getText();
+    String telp = No_Telepon.getText();
+    String alamat = Alamat.getText();
+    String jk = Jenis_Kelamin.getSelectedItem().toString().equals("Laki-laki") ? "L" : "P";
 
-        String query = "INSERT INTO pasien (nama, no_telepon, alamat, jenis_kelamin) VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, nama);
-            ps.setString(2, telp);
-            ps.setString(3, alamat);
-            ps.setString(4, jk);
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!");
-            loadTable();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal menambahkan data: " + e.getMessage());
-        }
+    // Validasi No_Telepon harus angka
+    if (!telp.matches("\\d+")) { // Regex untuk memastikan hanya angka
+        JOptionPane.showMessageDialog(this, "Nomor telepon hanya boleh berisi angka!", "Validasi Gagal", JOptionPane.WARNING_MESSAGE);
+        return; // Hentikan proses jika validasi gagal
     }
+
+    // Lanjutkan jika validasi berhasil
+    String query = "INSERT INTO pasien (nama, no_telepon, alamat, jenis_kelamin) VALUES (?, ?, ?, ?)";
+
+    try (PreparedStatement ps = conn.prepareStatement(query)) {
+        ps.setString(1, nama);
+        ps.setString(2, telp);
+        ps.setString(3, alamat);
+        ps.setString(4, jk);
+        ps.executeUpdate();
+        JOptionPane.showMessageDialog(this, "Data berhasil ditambahkan!");
+        loadTable();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Gagal menambahkan data: " + e.getMessage());
+    }
+}
 
     // Edit data
    // Edit data
