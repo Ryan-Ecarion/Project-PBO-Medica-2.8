@@ -1,0 +1,11 @@
+Medica App
+Username : admin
+Password : admin123
+
+Pastikan menginstal jdatechooser
+jdk 22
+
+
+Link GitHub
+https://github.com/Ryan-Ecarion/Project-PBO-Medica-2.8
+
